@@ -175,7 +175,8 @@ function HomeScreen({ navigation }) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#0A1F44", padding: 20 }}>
+    <View style={{ flex: 1, backgroundColor: "#0A1F44" }}>
+      <View style={{ flex: 1, padding: 20 }}></View>
       <Text style={styles.title}>COTAÇÃO DE MOEDAS</Text>
       <Text style={styles.subtitle}>ATUALIZADO EM: {updatedAt}</Text>
 
@@ -325,13 +326,12 @@ flagImg: {
 navbar: {
   flexDirection: "row",
   backgroundColor: "#fff",
-  paddingVertical: 10,
+  paddingVertical: 12,
   justifyContent: "space-around",
   borderTopLeftRadius: 20,
   borderTopRightRadius: 20,
   elevation: 10
 },
-
 navItem: {
   alignItems: "center"
 },
