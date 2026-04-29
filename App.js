@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, FlatList, ScrollView } from "react-native";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -120,8 +120,7 @@ function LoginScreen({ navigation }) {
 
 //tela principal
 function HomeScreen({ navigation }) {
-  const [usd, setUsd] = useState(null);
-  const [eur, setEur] = useState(null);
+  const [currencies, setCurrencies] = useState([]);
   const [updatedAt, setUpdatedAt] = useState("");
 
   const auth = getAuth();
@@ -131,8 +130,8 @@ function HomeScreen({ navigation }) {
       const response = await fetch("https://economia.awesomeapi.com.br/json/all");
       const data = await response.json();
 
-      setUsd(data.USD);
-      setEur(data.EUR);
+      const arrayMoedas = Object.values(data);
+      setCurrencies(arrayMoedas);
 
       const now = new Date();
       setUpdatedAt(now.toLocaleString());
@@ -147,24 +146,46 @@ function HomeScreen({ navigation }) {
 
   const handleLogout = () => {
     signOut(auth)
-      .then(() => {
-        navigation.navigate("Login");
-      })
-      .catch(() => {
-        alert("Erro ao sair");
-      });
+      .then(() => navigation.navigate("Login"))
+      .catch(() => alert("Erro ao sair"));
   };
 
-  const renderCard = (currency, flagUrl, name) => {
+
+  const flags = {
+    USD: "https://flagcdn.com/w40/us.png", //estados unidos
+    EUR: "https://flagcdn.com/w40/eu.png", //união europeia
+    GBP: "https://flagcdn.com/w40/gb.png", //reino unido
+    ARS: "https://flagcdn.com/w40/ar.png", //argentina
+    CAD: "https://flagcdn.com/w40/ca.png", //canadá
+    AUD: "https://flagcdn.com/w40/au.png", //austrália
+    JPY: "https://flagcdn.com/w40/jp.png", //japão
+    CHF: "https://flagcdn.com/w40/ch.png", //suíça
+    CNY: "https://flagcdn.com/w40/cn.png", //china
+    ILS: "https://flagcdn.com/w40/il.png", //israel
+  };
+
+  const renderCard = (currency) => {
     if (!currency) return null;
+
+    const flagUrl = flags[currency.code];
 
     return (
       <View style={styles.card}>
-        <Image source={{ uri: flagUrl }} style={styles.flagImg} />
+        {flagUrl ? (
+          <Image source={{ uri: flagUrl }} style={styles.flagImg} />
+        ) : (
+          <Text style={styles.flagFallback}>
+            {currency.code}
+          </Text>
+        )}
 
         <View style={{ flex: 1 }}>
-          <Text style={styles.cardTitle}>{currency.code} / BRL</Text>
-          <Text style={styles.cardSubtitle}>{name}</Text>
+          <Text style={styles.cardTitle}>
+            {currency.code} / BRL
+          </Text>
+          <Text style={styles.cardSubtitle}>
+            {currency.name}
+          </Text>
         </View>
 
         <Text style={styles.value}>
@@ -176,46 +197,48 @@ function HomeScreen({ navigation }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: "#0A1F44" }}>
-      <View style={{ flex: 1, padding: 20 }}></View>
-      <Text style={styles.title}>COTAÇÃO DE MOEDAS</Text>
-      <Text style={styles.subtitle}>ATUALIZADO EM: {updatedAt}</Text>
 
-      {renderCard(
-        usd,
-        "https://flagcdn.com/w40/us.png",
-        "1 DÓLAR AMERICANO"
-      )}
+      <ScrollView contentContainerStyle={{ padding: 20 }}>
+        <Text style={styles.title}>COTAÇÃO DE MOEDAS</Text>
+        <Text style={styles.subtitle}>
+          ATUALIZADO EM: {updatedAt}
+        </Text>
 
-      {renderCard(
-        eur,
-        "https://flagcdn.com/w40/eu.png",
-        "1 EURO"
-      )}
+        {currencies.map((item, index) => (
+          <View key={index}>
+            {renderCard(item)}
+          </View>
+        ))}
 
-      <TouchableOpacity style={styles.button} onPress={fetchData}>
-        <Text style={styles.buttonText}>ATUALIZAR COTAÇÕES</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={fetchData}>
+          <Text style={styles.buttonText}>
+            ATUALIZAR COTAÇÕES
+          </Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity style={styles.logout} onPress={handleLogout}>
-        <Text style={styles.logoutText}>SAIR</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.logout} onPress={handleLogout}>
+          <Text style={styles.logoutText}>SAIR</Text>
+        </TouchableOpacity>
+      </ScrollView>
 
-    <View style={styles.navbar}>
-      <TouchableOpacity style={styles.navItem}>
-        <Text style={styles.navIcon}>💰</Text>
-        <Text style={styles.navText}>COTAÇÕES</Text>
-      </TouchableOpacity>
+      <View style={styles.navbar}> //barra de navegação fixa embaixo
+        <TouchableOpacity style={styles.navItem}>
+          <Text style={styles.navIcon}>💰</Text>
+          <Text style={[styles.navText, { color: "#FFD60A" }]}>
+            COTAÇÕES
+          </Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity style={styles.navItem}>
-        <Text style={styles.navIcon}>📊</Text>
-        <Text style={styles.navText}>HISTÓRICO</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem}>
+          <Text style={styles.navIcon}>📊</Text>
+          <Text style={styles.navText}>HISTÓRICO</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity style={styles.navItem}>
-        <Text style={styles.navIcon}>⚙️</Text>
-        <Text style={styles.navText}>CONFIG</Text>
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity style={styles.navItem}>
+          <Text style={styles.navIcon}>⚙️</Text>
+          <Text style={styles.navText}>CONFIG</Text>
+        </TouchableOpacity>
+      </View>
 
     </View>
   );
