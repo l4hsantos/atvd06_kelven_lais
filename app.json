@@ -1,7 +1,13 @@
 {
   "expo": {
     "name": "myproject",
-    "slug": "myproject",
-    "version": "1.0.0"
+    "slug": "projeto1",
+    "version": "1.0.0",
+    "extra": {
+      "eas": {
+        "projectId": "f53b64f8-3967-4211-b3f2-bd09b6365c5c"
+      }
+    },
+    "owner": "matheus0906"
   }
 }

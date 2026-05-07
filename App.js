@@ -196,13 +196,9 @@ function HomeScreen({ navigation }) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#0A1F44" }}>
-
-      <ScrollView contentContainerStyle={{ padding: 20 }}>
-        <Text style={styles.title}>COTAÇÃO DE MOEDAS</Text>
-        <Text style={styles.subtitle}>
-          ATUALIZADO EM: {updatedAt}
-        </Text>
+    <View style={{ flex: 1, backgroundColor: "#0A1F44", padding: 20 }}>
+      <Text style={styles.title}>COTAÇÃO DE MOEDAS</Text>
+      <Text style={styles.subtitle}>ATUALIZADO EM: {updatedAt}</Text>
 
         {currencies.map((item, index) => (
           <View key={index}>
