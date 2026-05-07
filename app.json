@@ -5,9 +5,12 @@
     "version": "1.0.0",
     "extra": {
       "eas": {
-        "projectId": "f53b64f8-3967-4211-b3f2-bd09b6365c5c"
+        "projectId": "50e54575-25fa-4126-93b5-da8e5c36722a"
       }
     },
-    "owner": "matheus0906"
+    "plugins": [
+      "expo-font"
+    ],
+    "owner": "l4hsantos"
   }
 }

@@ -1,19 +1,11 @@
 import { initializeApp } from "firebase/app";
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, FlatList, ScrollView } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from "react-native";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { auth } from "./firebaseConfig";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDc4fnVJ-BJwZC9OLafrO1e-C3DQ0WIT2M",
-  authDomain: "atvd06-32d9b.firebaseapp.com",
-  projectId: "atvd06-32d9b",
-  storageBucket: "atvd06-32d9b.firebasestorage.app",
-  messagingSenderId: "362431759464",
-  appId: "1:362431759464:web:af629d59ab19371346e7dd",
-  measurementId: "G-C4G0PFM800"
-};
 
 const app = initializeApp(firebaseConfig);
 
@@ -25,8 +17,6 @@ function CadastroScreen({ navigation }) {
   const [password, setPassword] = useState("");
 
   const handleCadastro = () => {
-    const auth = getAuth();
-
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         alert("Usuário criado!");
@@ -75,7 +65,7 @@ function LoginScreen({ navigation }) {
   const [password, setPassword] = useState("");
 
   const handleLogin = () => {
-    const auth = getAuth();
+    
 
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
@@ -123,7 +113,6 @@ function HomeScreen({ navigation }) {
   const [currencies, setCurrencies] = useState([]);
   const [updatedAt, setUpdatedAt] = useState("");
 
-  const auth = getAuth();
 
   const fetchData = async () => {
     try {
@@ -197,6 +186,7 @@ function HomeScreen({ navigation }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: "#0A1F44", padding: 20 }}>
+      <ScrollView>
       <Text style={styles.title}>COTAÇÃO DE MOEDAS</Text>
       <Text style={styles.subtitle}>ATUALIZADO EM: {updatedAt}</Text>
 
@@ -217,7 +207,7 @@ function HomeScreen({ navigation }) {
         </TouchableOpacity>
       </ScrollView>
 
-      <View style={styles.navbar}> //barra de navegação fixa embaixo
+      <View style={styles.navbar}> 
         <TouchableOpacity style={styles.navItem}>
           <Text style={styles.navIcon}>💰</Text>
           <Text style={[styles.navText, { color: "#FFD60A" }]}>
